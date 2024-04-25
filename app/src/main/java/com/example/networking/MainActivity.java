@@ -7,7 +7,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -32,12 +31,13 @@ public class MainActivity extends AppCompatActivity implements JsonTask.JsonTask
         setContentView(R.layout.activity_main);
         gson = new Gson();
 
-        items.add(new Mountain("Matterhorn"));
+
         items.add(new Mountain("Mont Blanc"));
+        items.add(new Mountain("Matterhorn"));
         items.add(new Mountain("Denali"));
 
         for(int i=0; i<items.size(); i++){
-            Log.d("Unique ID", items.get(i).toString()+" hej");
+            Log.d("Unique ID", items.get(i).toString()+"WAZZUP");
             recyclerItems.add(new RecyclerViewItem(items.get(i).toString()));
         }
         adapter = new RecyclerViewAdapter(this, recyclerItems, new RecyclerViewAdapter.OnClickListener() {
@@ -63,9 +63,12 @@ public class MainActivity extends AppCompatActivity implements JsonTask.JsonTask
         items.clear();
         items.addAll(listOfMountains);
         for(int i=0; i<items.size(); i++){
-            Log.d("===>1111", items.get(i).toString()+" hej");
+            Log.d("===>", items.get(i).toString()+"WAZZUP");
             recyclerItems.add(new RecyclerViewItem(items.get(i).toString()));
         }
         adapter.notifyDataSetChanged();
     }
+
+
+
 }
