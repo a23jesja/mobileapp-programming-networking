@@ -1,42 +1,70 @@
 
 # Rapport
 
-**Skriv din rapport här!**
+Först så skapades de en RecycleView inom layout, efter detta så skapades det en class "Mountain", denna klass skapades för att kunna utföra de två kraven som fanns gällande implementeringen av Arraylista. Adaptern some skulle skapas, skapades genom kopiering av kod från lenasys. 
+Hur "json" datan kunde visas/fungera, var genom en länk som visades i recycleview med hjälp av denna "adapter". 
 
-_Du kan ta bort all text som finns sedan tidigare_.
+Nedan kommer kod inom MainActivity som visar detta.
 
-## Följande grundsyn gäller dugga-svar:
 
-- Ett kortfattat svar är att föredra. Svar som är längre än en sida text (skärmdumpar och programkod exkluderat) är onödigt långt.
-- Svaret skall ha minst en snutt programkod.
-- Svaret skall inkludera en kort övergripande förklarande text som redogör för vad respektive snutt programkod gör eller som svarar på annan teorifråga.
-- Svaret skall ha minst en skärmdump. Skärmdumpar skall illustrera exekvering av relevant programkod. Eventuell text i skärmdumpar måste vara läsbar.
-- I de fall detta efterfrågas, dela upp delar av ditt svar i för- och nackdelar. Dina för- respektive nackdelar skall vara i form av punktlistor med kortare stycken (3-4 meningar).
-
-Programkod ska se ut som exemplet nedan. Koden måste vara korrekt indenterad då den blir lättare att läsa vilket gör det lättare att hitta syntaktiska fel.
 
 ```
-function errorCallback(error) {
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            // Geolocation API stöds inte, gör något
-            break;
-        case error.POSITION_UNAVAILABLE:
-            // Misslyckat positionsanrop, gör något
-            break;
-        case error.UNKNOWN_ERROR:
-            // Okänt fel, gör något
-            break;
+public class MainActivity extends AppCompatActivity implements JsonTask.JsonTaskListener {
+
+    private Gson gson;
+    private final String JSON_URL = "https://mobprog.webug.se/json-api?login=brom";
+    private final String JSON_FILE = "mountains.json";
+    ArrayList<Mountain> items = new ArrayList<>();
+    ArrayList<RecyclerViewItem> recyclerItems = new ArrayList<>();
+    RecyclerViewAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        gson = new Gson();
+
+
+        items.add(new Mountain("Mont Blanc"));
+        items.add(new Mountain("Matterhorn"));
+        items.add(new Mountain("Denali"));
+
+        for(int i=0; i<items.size(); i++){
+            Log.d("Unique ID", items.get(i).toString()+"WAZZUP");
+            recyclerItems.add(new RecyclerViewItem(items.get(i).toString()));
+        }
+        adapter = new RecyclerViewAdapter(this, recyclerItems, new RecyclerViewAdapter.OnClickListener() {
+            @Override
+            public void onClick(RecyclerViewItem item) {
+                Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        RecyclerView view = findViewById(R.id.recycler_view);
+        view.setLayoutManager(new LinearLayoutManager(this));
+        view.setAdapter(adapter);
+
+        //new JsonFile(this, this).execute(JSON_FILE);
+        new JsonTask(this).execute(JSON_URL);
+    }
+
+    @Override
+    public void onPostExecute(String json) {
+        Log.d("MainActivity", json);
+        Type type = new TypeToken<List<com.example.networking.Mountain>>() {}.getType();
+        List<Mountain> listOfMountains = gson.fromJson(json, type);
+        items.clear();
+        items.addAll(listOfMountains);
+        for(int i=0; i<items.size(); i++){
+            Log.d("===>", items.get(i).toString()+"WAZZUP");
+            recyclerItems.add(new RecyclerViewItem(items.get(i).toString()));
+        }
+        adapter.notifyDataSetChanged();
     }
 }
 ```
 
-Bilder läggs i samma mapp som markdown-filen.
 
-![](android.png)
 
-Läs gärna:
+![](bergen.png)
 
-- Boulos, M.N.K., Warren, J., Gong, J. & Yue, P. (2010) Web GIS in practice VIII: HTML5 and the canvas element for interactive online mapping. International journal of health geographics 9, 14. Shin, Y. &
-- Wunsche, B.C. (2013) A smartphone-based golf simulation exercise game for supporting arthritis patients. 2013 28th International Conference of Image and Vision Computing New Zealand (IVCNZ), IEEE, pp. 459–464.
-- Wohlin, C., Runeson, P., Höst, M., Ohlsson, M.C., Regnell, B., Wesslén, A. (2012) Experimentation in Software Engineering, Berlin, Heidelberg: Springer Berlin Heidelberg.

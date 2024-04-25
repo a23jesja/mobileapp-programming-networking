@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements JsonTask.JsonTask
         items.clear();
         items.addAll(listOfMountains);
         for(int i=0; i<items.size(); i++){
-            Log.d("===>", items.get(i).toString()+"NULLROUTED");
+            Log.d("===>", items.get(i).toString()+"WAZZUP");
             recyclerItems.add(new RecyclerViewItem(items.get(i).toString()));
         }
         adapter.notifyDataSetChanged();
